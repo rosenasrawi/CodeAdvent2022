@@ -2,13 +2,13 @@
 
 import os
 
-def preprocess(datafile):
-    wd = os.getcwd()
-    with open(wd + "/01/" + datafile, "r") as calorieFile:
-        calories = calorieFile.readlines()
-        calories = [i.rstrip('\n') for i in calories]
+def preprocess(day):
 
-    return calories
+    with open(os.getcwd() + day + '/input.txt', "r") as input:
+        data = input.readlines()
+        data = [i.rstrip('\n') for i in data]
+
+    return data
 
 def elves(calories):
 
@@ -16,17 +16,15 @@ def elves(calories):
 
     for cal in calories:
 
-        if cal != '':
+        if cal == '':
+            maxcal.append(cals); cals = 0
+        else:
             cals+=int(cal)
-        elif cal == '':
-            maxcal.append(cals)
-            cals = 0
 
     maxcal.sort(reverse=True)
 
-    return max(maxcal), sum(maxcal[:3])
+    print('Part 1:', maxcal[0])
+    print('Part 2:', sum(maxcal[:3]))
 
-calories = preprocess('input.txt')
-solution = elves(calories)
-
-print('Part 1:', solution[0], ',', 'Part 2:', solution[1])
+calories = preprocess('/01')
+elves(calories)
