@@ -10,19 +10,23 @@ def preprocess(datafile):
 
     return calories
 
+def elves(calories):
+
+    maxcal = []; cals = 0
+
+    for cal in calories:
+
+        if cal != '':
+            cals+=int(cal)
+        elif cal == '':
+            maxcal.append(cals)
+            cals = 0
+
+    maxcal.sort(reverse=True)
+
+    return max(maxcal), sum(maxcal[:3])
+
 calories = preprocess('input.txt')
+solution = elves(calories)
 
-maxcal = []; cals = 0
-
-for cal in calories:
-
-    if cal != '':
-        cals+=int(cal)
-    elif cal == '':
-        maxcal.append(cals)
-        cals = 0
-
-maxcal.sort(reverse=True)
-
-print('Part 1:', max(maxcal))
-print('Part 2:', sum(maxcal[:3]))
+print('Part 1:', solution[0], ',', 'Part 2:', solution[1])
