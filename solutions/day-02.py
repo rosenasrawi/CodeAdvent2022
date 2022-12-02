@@ -2,49 +2,43 @@
 
 from _preprocess import *
 
-rounds = preprocess('02')
+def rockpapsci(rounds):
 
-total = {'other':0, 'self':0}
+    total = {'Part 1':0, 'Part 2':0}
+    hands = {'A':1, 'X':1, 'B':2, 'Y':2, 'C':3, 'Z':3 }
 
-hands = {'A':1, 'X':1, 'B':2, 'Y':2, 'C':3, 'Z':3 }
-draw = ['A X', 'B Y', 'C Z']
-win = ['A Y', 'B Z', 'C X']
+    # Part 1
+    draw = ['A X', 'B Y', 'C Z']
+    win = ['A Y', 'B Z', 'C X']
 
-for r in rounds:
+    for r in rounds:
 
-    total['other'] += hands[r[0]]
-    total['self'] += hands[r[2]]
+        total['Part 1'] += hands[r[2]]
 
-    if r in draw:
-        total['other'] += 3
-        total['self'] += 3
-    elif r in win:
-        total['self'] += 6
-    else:
-        total['other'] += 6
+        if r in draw:
+            total['Part 1'] += 3
+        elif r in win:
+            total['Part 1'] += 6
 
-total = {'other':0, 'self':0}
+    # Part 2
+    draw = {'A':'X', 'B':'Y', 'C':'Z'}
+    win = {'A':'Y', 'B':'Z', 'C':'X'}
+    lose = {'A':'Z', 'B':'X', 'C':'Y'}
 
-draw = {'A':'X', 'B':'Y', 'C':'Z'}
-win = {'A':'Y', 'B':'Z', 'C':'X'}
-lose = {'A':'Z', 'B':'X', 'C':'Y'}
+    for r in rounds:
 
-for r in rounds:
-    total['other'] += hands[r[0]]
+        if r[2] == 'X':
+            hand = lose[r[0]]
+        elif r[2] == 'Y':
+            hand = draw[r[0]]
+            total['Part 2'] += 3
+        elif r[2] == 'Z':
+            hand = win[r[0]]
+            total['Part 2'] += 6
 
-    if r[2] == 'X':
-        hand = lose[r[0]]
-        total['other'] += 6
-    elif r[2] == 'Y':
-        hand = draw[r[0]]
-        total['other'] += 3
-        total['self'] += 3
-    elif r[2] == 'Z':
-        hand = win[r[0]]
-        total['self'] += 6
+        total['Part 2'] += hands[hand]
 
-    total['self'] += hands[hand]
-
-print(total)
+    return total
 
 rounds = preprocess('02')
+print(rockpapsci(rounds))
