@@ -1,4 +1,4 @@
-# Day 2: ...
+# Day 2: Rock Paper Scissors
 
 from _preprocess import *
 
