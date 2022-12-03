@@ -7,9 +7,8 @@ def split(sack):
     m = len(sack)//2
     return sack[:m], sack[m:]
 
-let = list(string.ascii_letters)
-pri = list(range(1,27))+list(range(27,53))
-mappings = {let[i]: pri[i] for i in range(len(pri))}
+letters = list(string.ascii_letters)
+mappings = {let: val+1 for val, let in enumerate(letters)}
 
 def elfsupplies(rucksacks, part, common = [], total = 0):
 
@@ -31,7 +30,7 @@ def elfsupplies(rucksacks, part, common = [], total = 0):
                 if i in group[0] and i in group[1]: 
                     common.append(i); break
 
-    for i in common: total+=mappings[i]
+    for i in common: total += mappings[i]
 
     return total
 
