@@ -14,7 +14,7 @@ def findoverlap(assignments, part=0, full=0):
         s2 = list(range(asg[2],asg[3]+1))
 
         for i in s1:
-            if i in s2: full +=1; break      
+            if i in s2: full += 1; break      
 
     print('Part 1:', part, ',', 'Part 2:', full)
 
