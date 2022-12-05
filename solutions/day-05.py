@@ -1,38 +1,42 @@
 from _preprocess import *
 import re
 
-def splitdata(crates):
+def getstacks(crates):
 
-    stacks = {i: [] for i in list(range(1,10))}
-    icol = [crates[8].index(i) for i in list(map(str,list(range(1,10))))]
+    for e, line in enumerate(crates):
+        if len(line) < 1: break
+
+    cols = re.findall(r'\d+', crates[e-1])
+    icol = [crates[e-1].index(c) for c in cols]
+    
+    stacks = {int(c): [] for c in cols}
+    moves = crates[e+1:]
 
     for i, c in enumerate(icol):
-        for r in reversed(range(8)):
+        for r in reversed(range(e-1)):
             if crates[r][c].isalpha():
                 stacks[i+1].append(crates[r][c])
 
-    rules = crates[10:]
+    return stacks, moves
 
-    return stacks, rules
-
-def movecrates(crates, rev = True):
+def movecrates(crates, rev = True, top = ''):
     
-    stacks, rules = splitdata(crates)
+    stacks, moves = getstacks(crates)
     
-    for rule in rules:
-        rule = list(map(int,re.findall(r'\d+', rule)))
-        q = rule[0]; f = rule[1]; t = rule[2]
+    for move in moves:
+        move = list(map(int,re.findall(r'\d+', move)))
+        qt = move[0]; fr = move[1]; to = move[2]
         
-        move = stacks[f][-q:]
-        if rev: move.reverse()
-        stacks[t] += move
-        for i in range(q): stacks[f].pop()
+        substack = stacks[fr][-qt:]
+        if rev: substack.reverse()
 
-    top = ''
-    for i in list(range(1,10)): 
-        top += stacks[i][-1]
+        stacks[to] += substack
+        stacks[fr] = stacks[fr][:len(stacks[fr]) - qt]
 
-    return(top)
+    for i,t in enumerate(stacks):
+        top += stacks[t][-1]
+
+    return top
 
 crates = preprocess('05')
 
