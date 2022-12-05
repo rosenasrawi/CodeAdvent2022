@@ -5,12 +5,10 @@ import re
 
 def getstacks(crates):
 
-    for e, line in enumerate(crates):
-        if len(line) < 1: break
-
+    e = crates.index(min(crates, key=len))
     cols = re.findall(r'\d+', crates[e-1])
     icol = [crates[e-1].index(c) for c in cols]
-    
+
     stacks = {int(c): [] for c in cols}
     moves = crates[e+1:]
 
