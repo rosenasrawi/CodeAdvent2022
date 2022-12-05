@@ -1,4 +1,4 @@
-# Day 3 - Rucksack Reorganisation
+# Day 3: Rucksack Reorganisation
 
 from _preprocess import *
 import string

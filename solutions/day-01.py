@@ -1,4 +1,4 @@
-# Day 1: Calorie counting
+# Day 1: Calorie Counting
 
 from _preprocess import *
 

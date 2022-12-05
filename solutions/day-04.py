@@ -1,4 +1,4 @@
-# Day 4 - Camp Cleanup
+# Day 4: Camp Cleanup
 
 from _preprocess import *
 import re
