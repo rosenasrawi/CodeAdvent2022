@@ -33,8 +33,8 @@ def movecrates(crates, rev = True, top = ''):
         stacks[to] += substack
         stacks[fr] = stacks[fr][:len(stacks[fr]) - qt]
 
-    for i,t in enumerate(stacks):
-        top += stacks[t][-1]
+    for t in range(len(stacks)):
+        top += stacks[t+1][-1]
 
     return top
 
