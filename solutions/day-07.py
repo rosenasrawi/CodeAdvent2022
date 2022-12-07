@@ -2,7 +2,7 @@
 
 from _preprocess import *
 
-def maketree(commands, tree = {'/R': 0}, curdir = '/R'):
+def filesystem(commands, tree = {'/': 0}, curdir = ['/']):
 
     for c in commands:
 
@@ -10,31 +10,28 @@ def maketree(commands, tree = {'/R': 0}, curdir = '/R'):
 
         if c[1] == 'cd':
             if c[2] == '/':
-                curdir = '/R'
+                curdir = ['/']
             elif c[2] == '..':
-                while curdir[-1] != '/':
-                    curdir = curdir[:-1]
-                curdir = curdir[:-1]    
-            else: curdir += '/' + c[2]
+                curdir.pop()
+            else: 
+                curdir.append(c[2])
         
         if c[0].isnumeric():
-            dir = ''; curdir += '/'
-            for i, val in enumerate(curdir):
-                dir += val
-                if i > 1 and dir[i] == '/':
-                    tree[dir[:-1]] += int(c[0])
-            curdir = curdir[:-1] 
+            dir = []
+            for val in curdir:
+                dir.append(val)
+                tree[''.join(dir)] += int(c[0])
 
         if c[0] == 'dir':
-            d = curdir + '/' + c[1]
-            if d not in tree:
-                tree[d] = 0
+            dir = ''.join(curdir + [c[1]])
+            if dir not in tree:
+                tree[dir] = 0
 
     return tree
 
-def makespace(tree, remove = [], space = 70000000):
+def freespace(tree, remove = [], space = 70000000):
 
-    space -= tree['/R']
+    space -= tree['/']
     sizes = [tree[i] for i in tree]
     remove = [size for size in sizes if space+size >=30000000]
 
@@ -43,5 +40,5 @@ def makespace(tree, remove = [], space = 70000000):
 
     return small,large
 
-small, large = makespace(maketree(preprocess('07')))
+small, large = freespace(filesystem(preprocess('07')))
 print('Part 1:', small); print('Part 2:', large)
