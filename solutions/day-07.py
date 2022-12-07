@@ -12,20 +12,20 @@ def filesystem(commands, tree = {'/': 0}, curdir = ['/']):
             if c[2] == '/':
                 curdir = ['/']
             elif c[2] == '..':
-                curdir.pop()
+                dir = curdir.copy(); curdir.pop()
+                tree[''.join(curdir)] += tree[''.join(dir)]
             else: 
                 curdir.append(c[2])
         
         if c[0].isnumeric():
-            dir = []
-            for val in curdir:
-                dir.append(val)
-                tree[''.join(dir)] += int(c[0])
+            tree[''.join(curdir)] += int(c[0])
 
         if c[0] == 'dir':
-            dir = ''.join(curdir + [c[1]])
-            if dir not in tree:
-                tree[dir] = 0
+            tree[''.join(curdir + [c[1]])] = 0
+
+    for i in range(len(curdir)-1):
+        dir = curdir.copy(); curdir.pop()
+        tree[''.join(curdir)] += tree[''.join(dir)]
 
     return tree
 
