@@ -2,7 +2,7 @@
 
 from _preprocess import *
 
-def maketree(commands, tree = {'/R':0}, curdir = '/R'):
+def maketree(commands, tree = {'/R': 0}, curdir = '/R'):
 
     for c in commands:
 
@@ -32,18 +32,16 @@ def maketree(commands, tree = {'/R':0}, curdir = '/R'):
 
     return tree
 
-def freespace(tree, remove = [], space = 70000000):
+def makespace(tree, remove = [], space = 70000000):
 
     space -= tree['/R']
+    sizes = [tree[i] for i in tree]
+    remove = [size for size in sizes if space+size >=30000000]
 
-    for size in [tree[i] for i in tree]:
-        if space + size >= 30000000:
-            remove.append(size)
+    small = sum([tree[i] for i in tree if tree[i] <= 100000])
+    large = min(remove)
 
-    return min(remove)
+    return small,large
 
-commands = preprocess('07')
-tree = maketree(commands)
-
-print('Part 1:', sum([tree[i] for i in tree if tree[i] <= 100000]))
-print('Part 2:', freespace(tree))
+small, large = makespace(maketree(preprocess('07')))
+print('Part 1:', small); print('Part 2:', large)
