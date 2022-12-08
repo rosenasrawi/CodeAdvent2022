@@ -2,43 +2,38 @@
 
 from _preprocess import *
 
-def filesystem(commands, tree = {'/': 0}, curdir = ['/']):
+def filesystem(commands, dirs = {'/': 0}, curdir = ['/']):
 
     for c in commands:
 
         c = c.split(' ')
 
         if c[1] == 'cd':
-            if c[2] == '/':
-                curdir = ['/']
-            elif c[2] == '..':
+            if c[2] == '..':
                 dir = curdir.copy(); curdir.pop()
-                tree[''.join(curdir)] += tree[''.join(dir)]
-            else: 
+                dirs[''.join(curdir)] += dirs[''.join(dir)]
+            elif c[2] != '/': 
                 curdir.append(c[2])
         
         if c[0].isnumeric():
-            tree[''.join(curdir)] += int(c[0])
+            dirs[''.join(curdir)] += int(c[0])
 
         if c[0] == 'dir':
-            tree[''.join(curdir + [c[1]])] = 0
+            dirs[''.join(curdir + [c[1]])] = 0
 
-    for i in range(len(curdir)-1):
+    while len(curdir) != 1:
         dir = curdir.copy(); curdir.pop()
-        tree[''.join(curdir)] += tree[''.join(dir)]
+        dirs[''.join(curdir)] += dirs[''.join(dir)]
 
-    return tree
+    return dirs
 
-def freespace(tree, remove = [], space = 70000000):
+def freespace(dirs, sizes, memory = 70000000, space = 30000000):
 
-    space -= tree['/']
-    sizes = [tree[i] for i in tree]
-    remove = [size for size in sizes if space+size >=30000000]
+    small = sum([dirs[i] for i in dirs if dirs[i] <= 100000])
+    remove = [s for s in sizes if memory-dirs['/']+s >= space]
 
-    small = sum([tree[i] for i in tree if tree[i] <= 100000])
-    large = min(remove)
+    return small, min(remove)
 
-    return small,large
-
-small, large = freespace(filesystem(preprocess('07')))
+dirs = filesystem(preprocess('07')); sizes = [dirs[i] for i in dirs]
+small, large = freespace(dirs, sizes)
 print('Part 1:', small); print('Part 2:', large)
