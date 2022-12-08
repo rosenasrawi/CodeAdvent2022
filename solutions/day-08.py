@@ -8,7 +8,9 @@ def viewdist(line, tree, v = 0):
         if int(t) >= tree: break
     return v
 
-def treehouse(trees, visible = 0, view = []):
+def treehouse(trees, visible = 0, view = 0):
+
+    visible += len(trees)*2 + (len(trees)-2)*2
 
     for r in range(1,len(trees)-1):
 
@@ -35,12 +37,10 @@ def treehouse(trees, visible = 0, view = []):
             tview = viewdist(top,tree)
             bview = viewdist(bottom,tree)
             
-            view.append(lview*rview*tview*bview)
+            dist = lview*rview*tview*bview
+            if view < dist: view = dist
 
-    visedge = len(trees)*2 + (len(trees)-2)*2
-    visible += visedge
-
-    return visible, max(view)
+    return visible, view
 
 visible, view = treehouse(preprocess('08'))
 print('Part 1:', visible); print('Part 2:', view)
