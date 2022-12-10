@@ -2,49 +2,42 @@
 
 from _preprocess import *
 
-def update(cycle,signal,x):
-
-    cycle += 1
-    if cycle in signal:
-        signal[signal.index(cycle)] *= x
-
-    return cycle,signal
-
-def response(pixels,letters,sprite):
+def draw(pixels,message,sprite):
 
     if len(pixels) in sprite: pixels += '🎁'
     else: pixels += '🎄'
 
     if len(pixels) == 40:
-        letters.append(pixels); pixels = ''
+        message.append(pixels); pixels = ''
     
-    return pixels, letters
+    return pixels, message
 
-def decoder(program):
-    
-    cycle = 0; x = 1
-    signal = [20,60,100,140,180,220]
+def cathode(program):
+
+    x = 1; signal = [x]
+    targets = [20,60,100,140,180,220]
 
     sprite = [0,1,2]
-    pixels = ''; letters = []
+    pixels = ''; message = []
 
     for mes in program:
 
-        cycle,signal = update(cycle,signal,x)
-        pixels,letters = response(pixels,letters,sprite)
-        
+        signal.append(x)
+        pixels, message = draw(pixels,message,sprite)
+
         if mes != 'noop':
-            mes = mes.split()  
+            num = int(mes.split()[1])
 
-            cycle,signal = update(cycle,signal,x)
-            pixels,letters = response(pixels,letters,sprite)
+            x += num
+            signal.append(x)
 
-            x += int(mes[1])
-            sprite = [i+int(mes[1]) for i in sprite]
-        
-    print('Part 1:', sum(signal))
+            pixels, message = draw(pixels,message,sprite)
+            sprite = [i+num for i in sprite]
+    
+    strenght = sum([signal[t-1]*t for t in targets])    
+    print('Part 1:', strenght)
 
-    for row in letters: print(row)
+    for row in message: print(row)
 
 program = preprocess('10')
-decoder(program)
+cathode(program)
