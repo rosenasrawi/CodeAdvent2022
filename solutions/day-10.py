@@ -2,25 +2,49 @@
 
 from _preprocess import *
 
-program = preprocess('10')
-
-cycle = 0; x = 1
-signal = [20,60,100,140,180,220]
-
 def update(cycle,signal,x):
+
     cycle += 1
     if cycle in signal:
         signal[signal.index(cycle)] *= x
 
     return cycle,signal
 
-for mes in program:
+def response(pixels,letters,sprite):
 
-    cycle,signal = update(cycle,signal,x)
+    if len(pixels) in sprite: pixels += '🎁'
+    else: pixels += '🎄'
 
-    if mes != 'noop':
-        mes = mes.split()  
+    if len(pixels) == 40:
+        letters.append(pixels); pixels = ''
+    
+    return pixels, letters
+
+def decoder(program):
+    
+    cycle = 0; x = 1
+    signal = [20,60,100,140,180,220]
+
+    sprite = [0,1,2]
+    pixels = ''; letters = []
+
+    for mes in program:
+
         cycle,signal = update(cycle,signal,x)
-        x += int(mes[1])
+        pixels,letters = response(pixels,letters,sprite)
+        
+        if mes != 'noop':
+            mes = mes.split()  
 
-print(sum(signal))
+            cycle,signal = update(cycle,signal,x)
+            pixels,letters = response(pixels,letters,sprite)
+
+            x += int(mes[1])
+            sprite = [i+int(mes[1]) for i in sprite]
+        
+    print('Part 1:', sum(signal))
+
+    for row in letters: print(row)
+
+program = preprocess('10')
+decoder(program)
