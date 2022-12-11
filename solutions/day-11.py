@@ -1,10 +1,23 @@
 # Day 11: Monkey in the Middle
 
 from _preprocess import *
-import re
-import time
+import re, heapq, numpy
+
+def getmonkeys(input, monkeys = {}):
+
+    imonkeys = [i for i, line in enumerate(input) if 'Monkey' in line]
+
+    for m,i in enumerate(imonkeys):
+        monkeys[m] = {}
+        monkeys[m]['it'] = list(map(int,re.findall(r'\d+', input[i+1])))
+        monkeys[m]['op'] = input[i+2].split(' ')[-2:]
+        monkeys[m]['tst'] = [int(input[i+n].split(' ')[-1]) for n in [3,4,5]]
+        monkeys[m]['ins'] = 0
+
+    return monkeys
 
 def operation(num, operator):
+
     oper, val = operator
 
     if val == 'old': val = num
@@ -25,60 +38,37 @@ def throw(num, test, monkeys):
         monkeys[m2]['it'].append(num)
 
     return monkeys
-
-def getmonkeys(input):
-
-    imonkeys = [i for i, line in enumerate(input) if 'Monkey' in line]
-    monkeys = {}
-
-    for m,i in enumerate(imonkeys):
-
-        monkeys[m] = {}
-        monkeys[m]['it'] = list(map(int,re.findall(r'\d+', input[i+1])))
-        monkeys[m]['op']  = input[i+2].split(' ')[-2:]
-        monkeys[m]['tst']  = [int(input[i+n].split(' ')[-1]) for n in [3,4,5]]
-        monkeys[m]['insp'] = 0
-
-    return monkeys
-
-def therapy(num, div, part):
+    
+def therapy(num,part,divisor):
 
     if part == 1: num //= 3
-    else: num %= div
+    else: num %= divisor
 
     return num
 
-def monkeybusiness(monkeys, part):
+def monkeybusiness(monkeys, part, rounds, divisor = 1):
 
-    if part == 1: rounds = 20
-    else: rounds = 10000
-    
-    divisor = 1
-    for m in range(len(monkeys)):
-        divisor *= monkeys[m]['tst'][0]
+    divisor = numpy.prod([monkeys[m]['tst'][0] for m in range(len(monkeys))])
 
     for i in range(rounds):
         for m in range(len(monkeys)):
 
-            while len(monkeys[m]['it']):
+            while monkeys[m]['it']:
+                monkeys[m]['ins'] += 1
 
                 num = monkeys[m]['it'].pop(0)
-                monkeys[m]['insp']+=1
-
                 operator = monkeys[m]['op']
                 test = monkeys[m]['tst']
 
                 num = operation(num, operator)
-                num = therapy(num, divisor, part)
-
+                num = therapy(num,part,divisor)
                 monkeys = throw(num, test, monkeys)
 
-    inspected = [monkeys[m]['insp'] for m in range(len(monkeys))]
-    inspected.sort()
+    inspected = [monkeys[m]['ins'] for m in range(len(monkeys))]
 
-    return inspected[-2]*inspected[-1]
+    return numpy.prod(heapq.nlargest(2,inspected))
 
 input = preprocess('11')
 
-print('Part 1:', monkeybusiness(getmonkeys(input), 1))
-print('Part 2:', monkeybusiness(getmonkeys(input), 2))
+print('Part 1:', monkeybusiness(getmonkeys(input), 1, 20))
+print('Part 2:', monkeybusiness(getmonkeys(input), 2, 10000))
