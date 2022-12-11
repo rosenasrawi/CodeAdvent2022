@@ -1,7 +1,8 @@
 # Day 11: Monkey in the Middle
 
 from _preprocess import *
-import re, math
+import re
+import time
 
 def operation(num, operator):
     oper, val = operator
@@ -40,28 +41,44 @@ def getmonkeys(input):
 
     return monkeys
 
-input = preprocess('ex')
-monkeys = getmonkeys(input)
+def therapy(num, div, part):
 
-for i in range(20):
+    if part == 1: num //= 3
+    else: num %= div
+
+    return num
+
+def monkeybusiness(monkeys, part):
+
+    if part == 1: rounds = 20
+    else: rounds = 10000
+    
+    divisor = 1
     for m in range(len(monkeys)):
+        divisor *= monkeys[m]['tst'][0]
 
-        while len(monkeys[m]['it']):
+    for i in range(rounds):
+        for m in range(len(monkeys)):
 
-            num = monkeys[m]['it'].pop(0)
-            monkeys[m]['insp']+=1
+            while len(monkeys[m]['it']):
 
-            operator = monkeys[m]['op']
-            test = monkeys[m]['tst']
+                num = monkeys[m]['it'].pop(0)
+                monkeys[m]['insp']+=1
 
-            num = operation(num, operator)
-            num = math.floor(num/3)
-            
-            monkeys = throw(num, test, monkeys)
+                operator = monkeys[m]['op']
+                test = monkeys[m]['tst']
 
-inspected = [monkeys[m]['insp'] for m in range(len(monkeys))]
-inspected.sort()
+                num = operation(num, operator)
+                num = therapy(num, divisor, part)
 
-print(inspected[-2]*inspected[-1])
+                monkeys = throw(num, test, monkeys)
 
+    inspected = [monkeys[m]['insp'] for m in range(len(monkeys))]
+    inspected.sort()
 
+    return inspected[-2]*inspected[-1]
+
+input = preprocess('11')
+
+print('Part 1:', monkeybusiness(getmonkeys(input), 1))
+print('Part 2:', monkeybusiness(getmonkeys(input), 2))
