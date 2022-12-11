@@ -16,7 +16,7 @@ def getmonkeys(input, monkeys = {}):
 
     return monkeys
 
-def operation(num, operator):
+def operate(num, operator):
 
     oper, val = operator
 
@@ -32,10 +32,8 @@ def throw(num, test, monkeys):
 
     div, m1, m2 = test
 
-    if num%div == 0:
-        monkeys[m1]['it'].append(num)
-    else:     
-        monkeys[m2]['it'].append(num)
+    if num%div == 0: monkeys[m1]['it'].append(num)
+    else: monkeys[m2]['it'].append(num)
 
     return monkeys
     
@@ -50,7 +48,7 @@ def monkeybusiness(monkeys, part, rounds, divisor = 1):
 
     divisor = numpy.prod([monkeys[m]['tst'][0] for m in range(len(monkeys))])
 
-    for i in range(rounds):
+    for r in range(rounds):
         for m in range(len(monkeys)):
 
             while monkeys[m]['it']:
@@ -60,7 +58,7 @@ def monkeybusiness(monkeys, part, rounds, divisor = 1):
                 operator = monkeys[m]['op']
                 test = monkeys[m]['tst']
 
-                num = operation(num, operator)
+                num = operate(num, operator)
                 num = therapy(num,part,divisor)
                 monkeys = throw(num, test, monkeys)
 
