@@ -2,12 +2,10 @@
 
 from _preprocess import *
 
-def elves(calories):
-
-    maxcal = []; cals = 0
+def elves(calories, maxcal = [], cals = 0):
 
     for cal in calories:
-
+        
         if cal == '':
             maxcal.append(cals); cals = 0
         else:
