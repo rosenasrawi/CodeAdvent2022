@@ -2,4 +2,4 @@
 
 My solutions to [Advent of Code 2022](https://adventofcode.com/2022), using Python
 
-![](https://img.shields.io/badge/day%20📅-10-blue)![](https://img.shields.io/badge/stars%20⭐-20-yellow)
+![](https://img.shields.io/badge/day%20📅-11-blue)![](https://img.shields.io/badge/stars%20⭐-20-yellow)
