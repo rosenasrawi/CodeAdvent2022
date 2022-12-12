@@ -16,10 +16,10 @@ def neighbour(next, rmax, cmax, adj = {'l':[], 'r':[], 'u':[], 'd':[]}):
     
     return list(adj.values())
 
-def makestep(l1, l2, reverse = False):
+def canstep(l1, l2, backwards = False):
     
     letters = list(string.ascii_lowercase)
-    if reverse: letters.reverse()
+    if backwards: letters.reverse()
 
     if l1 == 'S': l1 = 'a'
     if l1 == 'E': l1 = 'z'
@@ -29,7 +29,7 @@ def makestep(l1, l2, reverse = False):
         return True
     else: return False
 
-def findpath(map, s, e, reverse = False):
+def findpath(map, s, e, backwards = False):
 
     for i, r in enumerate(map):
         if s in r: start = [i,r.index(s)]
@@ -47,14 +47,14 @@ def findpath(map, s, e, reverse = False):
         if l1 == e: visited.append(start); break
         if start not in visited: visited.append(start)
 
-        adj = neighbour(start,len(map),len(map[0]))
+        adj = neighbour(start, len(map), len(map[0]))
         olddist = distances[start[0]][start[1]]
 
         for next in adj:
             l2 = map[next[0]][next[1]]
 
             if next not in visited:
-                if makestep(l1,l2,reverse):
+                if canstep(l1, l2, backwards):
                     distances[next[0]][next[1]] = olddist + 1
                     visited.append(next)
                     queue.append(next)
@@ -66,4 +66,4 @@ def findpath(map, s, e, reverse = False):
 map = preprocess('12')
 
 print('Part 1:', findpath(map, s = 'S', e = 'E'))
-print('Part 2:', findpath(map, s = 'E', e = 'a', reverse = True))
+print('Part 2:', findpath(map, s = 'E', e = 'a', backwards = True))
