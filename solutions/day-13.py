@@ -1,7 +1,8 @@
 # Day 13: Distress Signal
 
 from _preprocess import *
-import json, itertools
+from functools import cmp_to_key
+import json
 
 def getpacks(packets, packs = []):
 
@@ -48,23 +49,13 @@ def pairsinorder(packs, order = []):
 
     return (sum(order))
 
-def orderpacks(packs, divider = [[[2]], [[6]]], index = []):
+def orderpacks(packs, divider = [[[2]], [[6]]]):
 
     packs += divider
+    packs = sorted(packs, key = cmp_to_key(leftvsright), reverse=True)
+    decoderkey = [packs.index(i)+1 for i in divider]
 
-    for i,p in enumerate(packs):
-
-        others = packs.copy(); others.pop(i); pos = []
-
-        for o in others:
-            decision = leftvsright(p,o)
-
-            if decision == 1: pos.append(False)
-            else: pos.append(True)    
-
-        index.append(sum(pos)+1)
-
-    return index[-2] * index[-1]
+    return decoderkey[0]*decoderkey[1]
 
 packs = getpacks(preprocess('13')) 
 
