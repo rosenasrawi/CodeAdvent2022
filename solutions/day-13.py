@@ -13,29 +13,29 @@ def getpacks(packets, packs = []):
 
     return packs
 
-def packorder(l, r, decision = 0):
+def packorder(left, right, decision = 0):
 
-    lint = type(l) is not list
-    rint = type(r) is not list
+    lint = type(left) is not list
+    rint = type(right) is not list
 
     if lint and rint:
-        if int(l) > int(r): decision = -1
-        elif int(l) < int(r): decision = 1
+        if int(left) > int(right): decision = -1
+        elif int(left) < int(right): decision = 1
 
     if (lint and not rint) or (rint and not lint):
-        if lint: l = [l]; lint = False
-        if rint: r = [r]; rint = False
+        if lint: left = [left]; lint = False
+        if rint: right = [right]; rint = False
 
     if not lint and not rint:
-        comb = list(zip(l,r))
+        comb = list(zip(left,right))
 
         for c in comb:
             decision = packorder(c[0],c[1])
             if decision != 0: break
 
         if decision == 0:
-            if len(l) < len(r): decision = 1
-            if len(l) > len(r): decision = -1
+            if len(left) < len(right): decision = 1
+            if len(left) > len(right): decision = -1
 
     return decision
 
