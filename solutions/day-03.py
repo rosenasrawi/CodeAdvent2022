@@ -7,10 +7,11 @@ def split(sack):
     m = len(sack)//2
     return sack[:m], sack[m:]
 
-letters = list(string.ascii_letters)
-mappings = {let: val+1 for val, let in enumerate(letters)}
+def elfsupplies(rucksacks, part):
 
-def elfsupplies(rucksacks, part, common = [], total = 0):
+    letters = list(string.ascii_letters)
+    mappings = {let: val+1 for val, let in enumerate(letters)}
+    total = 0; common = []
 
     if part == 1:
 

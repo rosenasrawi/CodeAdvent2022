@@ -35,12 +35,13 @@ def cathode(program):
             sprite = [i+num for i in sprite]
     
     strenght = sum([signal[t-1]*t for t in targets])    
-    print('Part 1:', strenght)
+    
+    return strenght, message
 
-    for row in message: print(row)
+strenght, message = cathode(getinput('10'))
 
-program = getinput('10')
-cathode(program)
+print('Part 1:', strenght)
+for row in message: print(row)
 
 # 🎁🎁🎁🎄🎄🎄🎁🎁🎄🎄🎁🎄🎄🎁🎄🎁🎁🎁🎁🎄🎄🎁🎁🎄🎄🎁🎄🎄🎄🎄🎁🎄🎄🎁🎄🎄🎁🎁🎄🎄
 # 🎁🎄🎄🎁🎄🎁🎄🎄🎁🎄🎁🎄🎄🎁🎄🎁🎄🎄🎄🎄🎁🎄🎄🎁🎄🎁🎄🎄🎄🎄🎁🎄🎄🎁🎄🎁🎄🎄🎁🎄

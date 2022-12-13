@@ -38,5 +38,6 @@ def ropebridge(moves, knots):
     return len(visited)
 
 moves = getinput('09')
+
 print('Part 1:', ropebridge(moves,2))
 print('Part 2:', ropebridge(moves,10))

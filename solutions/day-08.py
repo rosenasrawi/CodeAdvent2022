@@ -43,4 +43,6 @@ def treehouse(trees, visible = 0, view = 0):
     return visible, view
 
 visible, view = treehouse(getinput('08'))
-print('Part 1:', visible); print('Part 2:', view)
+
+print('Part 1:', visible)
+print('Part 2:', view)

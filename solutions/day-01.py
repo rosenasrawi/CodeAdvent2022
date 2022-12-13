@@ -13,8 +13,9 @@ def elves(calories, maxcal = [], cals = 0):
 
     maxcal.sort(reverse=True)
 
-    print('Part 1:', maxcal[0])
-    print('Part 2:', sum(maxcal[:3]))
+    return maxcal
 
-calories = getinput('01')
-elves(calories)
+maxcal = elves(getinput('01'))
+
+print('Part 1:', maxcal[0])
+print('Part 2:', sum(maxcal[:3]))

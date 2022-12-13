@@ -36,4 +36,6 @@ def freespace(dirs, sizes, memory = 70000000, space = 30000000):
 
 dirs = filesystem(getinput('07')); sizes = [dirs[i] for i in dirs]
 small, large = freespace(dirs, sizes)
-print('Part 1:', small); print('Part 2:', large)
+
+print('Part 1:', small)
+print('Part 2:', large)

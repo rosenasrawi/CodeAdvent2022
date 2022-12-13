@@ -2,12 +2,8 @@
 
 from _getinput import *
 
-def rockpapsci(rounds):
+def rockpapsci(rounds, total = [0,0], hands = {'X':1, 'Y':2, 'Z':3 }):
 
-    total = [0,0]
-    hands = {'X':1, 'Y':2, 'Z':3 }
-
-    # Part 1
     draw = ['A X', 'B Y', 'C Z']
     win = ['A Y', 'B Z', 'C X']
 
@@ -20,7 +16,6 @@ def rockpapsci(rounds):
 
         total[0] += hands[r[2]]
 
-    # Part 2
     draw = {'A':'X', 'B':'Y', 'C':'Z'}
     win = {'A':'Y', 'B':'Z', 'C':'X'}
     lose = {'A':'Z', 'B':'X', 'C':'Y'}
@@ -38,8 +33,9 @@ def rockpapsci(rounds):
 
         total[1] += hands[hand]
 
-    print('Part 1:', total[0])
-    print('Part 2:', total[1])
+    return total
 
-rounds = getinput('02')
-rockpapsci(rounds)
+total = rockpapsci(getinput('02'))
+
+print('Part 1:', total[0])
+print('Part 2:', total[1])

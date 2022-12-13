@@ -18,7 +18,9 @@ def findoverlap(assignments, full=0, part=0):
         for i in s1:
             if i in s2: part += 1; break      
 
-    print('Part 1:', full, ',', 'Part 2:', part)
+    return full, part
 
-assignments = getinput('04')
-findoverlap(assignments)
+full, part = findoverlap(getinput('04'))
+
+print('Part 1:', full)
+print('Part 2:', part)

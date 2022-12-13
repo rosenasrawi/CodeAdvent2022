@@ -1,3 +1,5 @@
+# Day 6: Tuning Troubles
+
 from _getinput import *
 from collections import Counter
 
@@ -6,6 +8,7 @@ def findstart(signal,plen):
         if len(Counter(signal[i:i+plen])) == plen:
             return i+plen; break
 
-signal = getinput('06')[0]
+signal = getinput('06')
+
 print('Part 1:', findstart(signal,4))
 print('Part 2:', findstart(signal,14))
