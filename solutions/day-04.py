@@ -1,6 +1,6 @@
 # Day 4: Camp Cleanup
 
-from _preprocess import *
+from _getinput import *
 import re
 
 def findoverlap(assignments, full=0, part=0):
@@ -20,5 +20,5 @@ def findoverlap(assignments, full=0, part=0):
 
     print('Part 1:', full, ',', 'Part 2:', part)
 
-assignments = preprocess('04')
+assignments = getinput('04')
 findoverlap(assignments)

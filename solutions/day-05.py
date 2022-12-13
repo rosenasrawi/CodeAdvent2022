@@ -1,6 +1,6 @@
 # Day 5: Supply Stacks
 
-from _preprocess import *
+from _getinput import *
 import re
 
 def getstacks(crates):
@@ -38,7 +38,7 @@ def movecrates(crates, rev = True, top = ''):
 
     return top
 
-crates = preprocess('05')
+crates = getinput('05')
 
 print('Part 1:', movecrates(crates))
 print('Part 2:', movecrates(crates, rev = False))

@@ -1,6 +1,6 @@
 # Day 2: Rock Paper Scissors
 
-from _preprocess import *
+from _getinput import *
 
 def rockpapsci(rounds):
 
@@ -41,5 +41,5 @@ def rockpapsci(rounds):
     print('Part 1:', total[0])
     print('Part 2:', total[1])
 
-rounds = preprocess('02')
+rounds = getinput('02')
 rockpapsci(rounds)

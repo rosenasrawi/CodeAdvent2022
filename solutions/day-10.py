@@ -1,6 +1,6 @@
 # Day 10: Cathode-Ray Tube
 
-from _preprocess import *
+from _getinput import *
 
 def draw(pixels,message,sprite):
 
@@ -39,7 +39,7 @@ def cathode(program):
 
     for row in message: print(row)
 
-program = preprocess('10')
+program = getinput('10')
 cathode(program)
 
 # 🎁🎁🎁🎄🎄🎄🎁🎁🎄🎄🎁🎄🎄🎁🎄🎁🎁🎁🎁🎄🎄🎁🎁🎄🎄🎁🎄🎄🎄🎄🎁🎄🎄🎁🎄🎄🎁🎁🎄🎄

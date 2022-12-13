@@ -1,6 +1,6 @@
 # Day 3: Rucksack Reorganisation
 
-from _preprocess import *
+from _getinput import *
 import string
 
 def split(sack):
@@ -34,7 +34,7 @@ def elfsupplies(rucksacks, part, common = [], total = 0):
 
     return total
 
-rucksacks = preprocess('03')
+rucksacks = getinput('03')
 
 print('Part 1:', elfsupplies(rucksacks,1))
 print('Part 2:', elfsupplies(rucksacks,2))

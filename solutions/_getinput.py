@@ -1,6 +1,6 @@
 import os
 
-def preprocess(day):
+def getinput(day):
 
     with open(os.getcwd() + '/input/input-' + day + '.txt', "r") as input:
         data = input.readlines()

@@ -1,6 +1,6 @@
 # Day 13: Distress Signal
 
-from _preprocess import *
+from _getinput import *
 from functools import cmp_to_key
 import json
 
@@ -58,7 +58,7 @@ def sortpacks(packs, divider = [[[2]], [[6]]]):
 
     return decoderkey[0] * decoderkey[1]
 
-packs = getpacks(preprocess('13'))
+packs = getpacks(getinput('13'))
 
 print('Part 1:', sortpairs(packs))
 print('Part 2:', sortpacks(packs))

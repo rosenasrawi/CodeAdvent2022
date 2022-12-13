@@ -1,6 +1,6 @@
 # Day 9: Rope Bridge
 
-from _preprocess import *
+from _getinput import *
 import numpy as np
 
 def follow(head, tail):
@@ -37,6 +37,6 @@ def ropebridge(moves, knots):
 
     return len(visited)
 
-moves = preprocess('09')
+moves = getinput('09')
 print('Part 1:', ropebridge(moves,2))
 print('Part 2:', ropebridge(moves,10))

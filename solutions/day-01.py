@@ -1,6 +1,6 @@
 # Day 1: Calorie Counting
 
-from _preprocess import *
+from _getinput import *
 
 def elves(calories, maxcal = [], cals = 0):
 
@@ -16,5 +16,5 @@ def elves(calories, maxcal = [], cals = 0):
     print('Part 1:', maxcal[0])
     print('Part 2:', sum(maxcal[:3]))
 
-calories = preprocess('01')
+calories = getinput('01')
 elves(calories)

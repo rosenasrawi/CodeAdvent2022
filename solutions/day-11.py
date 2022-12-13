@@ -1,6 +1,6 @@
 # Day 11: Monkey in the Middle
 
-from _preprocess import *
+from _getinput import *
 import re, heapq, numpy
 
 def getmonkeys(input, monkeys = {}):
@@ -66,7 +66,7 @@ def monkeybusiness(monkeys, part, rounds, divisor = 1):
 
     return numpy.prod(heapq.nlargest(2,inspected))
 
-input = preprocess('11')
+input = getinput('11')
 
 print('Part 1:', monkeybusiness(getmonkeys(input), 1, 20))
 print('Part 2:', monkeybusiness(getmonkeys(input), 2, 10000))

@@ -1,6 +1,6 @@
 # Day 8: Treetop Tree House
 
-from _preprocess import *
+from _getinput import *
 
 def viewdist(line, tree, v = 0):
     for t in line:
@@ -42,5 +42,5 @@ def treehouse(trees, visible = 0, view = 0):
 
     return visible, view
 
-visible, view = treehouse(preprocess('08'))
+visible, view = treehouse(getinput('08'))
 print('Part 1:', visible); print('Part 2:', view)

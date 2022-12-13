@@ -1,6 +1,6 @@
 # Day 12: Hill Climbing Algorithm
 
-from _preprocess import *
+from _getinput import *
 import string
 
 def neighbour(next, rmax, cmax, adj = {'l':[], 'r':[], 'u':[], 'd':[]}):
@@ -63,7 +63,7 @@ def findpath(map, s, e, backwards = False):
 
     return distances[end[0]][end[1]]
 
-map = preprocess('12')
+map = getinput('12')
 
 print('Part 1:', findpath(map, s = 'S', e = 'E'))
 print('Part 2:', findpath(map, s = 'E', e = 'a', backwards = True))

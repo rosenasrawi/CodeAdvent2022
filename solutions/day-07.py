@@ -1,6 +1,6 @@
 # Day 7: No Space Left On Device
 
-from _preprocess import *
+from _getinput import *
 
 def filesystem(commands, dirs = {'/': 0}, curdir = ['/']):
 
@@ -34,6 +34,6 @@ def freespace(dirs, sizes, memory = 70000000, space = 30000000):
 
     return small, min(remove)
 
-dirs = filesystem(preprocess('07')); sizes = [dirs[i] for i in dirs]
+dirs = filesystem(getinput('07')); sizes = [dirs[i] for i in dirs]
 small, large = freespace(dirs, sizes)
 print('Part 1:', small); print('Part 2:', large)

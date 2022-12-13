@@ -1,4 +1,4 @@
-from _preprocess import *
+from _getinput import *
 from collections import Counter
 
 def findstart(signal,plen):
@@ -6,6 +6,6 @@ def findstart(signal,plen):
         if len(Counter(signal[i:i+plen])) == plen:
             return i+plen; break
 
-signal = preprocess('06')[0]
+signal = getinput('06')[0]
 print('Part 1:', findstart(signal,4))
 print('Part 2:', findstart(signal,14))
