@@ -3,17 +3,13 @@
 from _preprocess import *
 import json, itertools
 
-def getpairs(packets, pairs = []):
+def getpacks(packets, packs = []):
 
-    for i, pack in enumerate(packets):
+    for pack in packets:
+        if len(pack) > 0: 
+            packs.append(json.loads(pack))
 
-        if len(pack) == 0:
-            pairs.append([json.loads(packets[i-2]), json.loads(packets[i-1])])
-
-        if i == len(packets)-1:
-            pairs.append([json.loads(packets[i-1]), json.loads(packets[i])])
-
-    return pairs
+    return packs
 
 def leftvsright(l, r, decision = 0):
 
@@ -33,8 +29,7 @@ def leftvsright(l, r, decision = 0):
 
         for c in comb:
             decision = leftvsright(c[0],c[1])
-            if decision != 0:
-                break
+            if decision != 0: break
 
         if decision == 0:
             if len(l) < len(r): decision = 1
@@ -42,19 +37,20 @@ def leftvsright(l, r, decision = 0):
 
     return decision
 
-def pairsinorder(pairs, order = []):
+def pairsinorder(packs, order = []):
 
-    for i, p in enumerate(pairs):
-        left, right = p
+    for i in range(0,len(packs),2):
+        left = packs[i]; right = packs[i+1]
         decision = leftvsright(left,right)
-        if decision == 1:
-            order.append(i+1)
+        order.append(decision)
+
+    order = [i+1 for i,o in enumerate(order) if o == 1]
 
     return (sum(order))
 
-def orderpacks(pairs, divider = [[[2]], [[6]]], index = []):
+def orderpacks(packs, divider = [[[2]], [[6]]], index = []):
 
-    packs = list(itertools.chain(*pairs)) + divider
+    packs += divider
 
     for i,p in enumerate(packs):
 
@@ -68,9 +64,9 @@ def orderpacks(pairs, divider = [[[2]], [[6]]], index = []):
 
         index.append(sum(pos)+1)
 
-    return index[-2]*index[-1]
+    return index[-2] * index[-1]
 
-pairs = getpairs(preprocess('13')) 
+packs = getpacks(preprocess('13')) 
 
-print('Part 1:', pairsinorder(pairs))
-print('Part 2:', orderpacks(pairs))
+print('Part 1:', pairsinorder(packs))
+print('Part 2:', orderpacks(packs))
