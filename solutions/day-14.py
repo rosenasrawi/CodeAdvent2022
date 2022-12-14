@@ -3,91 +3,83 @@
 from _getinput import *
 import re
 
-def makecave(rock, depth = 0):
+def findrock(cave, depth = 0):
 
-    cave = set()
+    rock = set()
     
-    for path in rock:
+    for path in cave:
 
         for i, coor in enumerate(path):
-            cave.add(coor)
+            rock.add(coor)
 
             if i < len(path)-1: 
                 next = path[i+1]
-                
-                xval = []; yval = []
-                xc = coor[0]; xn = next[0]
-                yc = coor[1]; yn = next[1]
+                xran = [coor[0], next[0]]; xval = []
+                yran = [coor[1], next[1]]; yval = []
 
-                if abs(xc-xn)>1:
-                    if xc > xn: xval = list(range(xc-1,xn,-1))
-                    else: xval = list(range(xc+1,xn))
+                if abs(xran[0]-xran[1])>1:
+                    xval = list(range(min(xran),max(xran)))
+                    for x in xval: rock.add((x,coor[1]))
 
-                if abs(yc-yn)>1:
-                    if yc > yn: yval = list(range(yc-1,yn,-1))
-                    else: yval = list(range(yc+1,yn))
+                if abs(yran[0]-yran[1])>1:
+                    yval = list(range(min(yran),max(yran)))
+                    for y in yval: rock.add((coor[0],y))
 
-                if xval: 
-                    for x in xval: cave.add((x,coor[1]))
-                if yval: 
-                    for y in yval: cave.add((coor[0],y))
+    depth = max([coor[1] for coor in rock])
 
-    for coor in cave:
-        if coor[1] > depth: depth = coor[1]
+    return rock, depth
 
-    return cave, depth
+def sandfall(rock, sand, depth, floor = 0):
 
-def sandfall(cave, depth, allsand, floor = 0):
-
-    full = False
-    sand = [500,0]
+    full = False; grain = [500,0]
 
     while True:
 
-        if floor > 0 and (500,1) in cave and (501,1) in cave and (499,1) in cave:
-            cave.add((500,0))
-            allsand.add((500,0))
+        if floor > 0 and (500,1) in rock and (501,1) in rock and (499,1) in rock:
+            rock.add((500,0))
+            sand.add((500,0))
             full = True; break
-        elif floor == 0 and sand[1] > depth:
+        elif floor == 0 and grain[1] > depth:
             full = True; break
 
-        below = (sand[0],sand[1]+1) not in cave
-        left = (sand[0]-1,sand[1]+1) not in cave
-        right = (sand[0]+1,sand[1]+1) not in cave
+        below = (grain[0],grain[1]+1) not in rock
+        left = (grain[0]-1,grain[1]+1) not in rock
+        right = (grain[0]+1,grain[1]+1) not in rock
 
         if below: 
-            sand[1] += 1
+            grain[1] += 1
         elif left and not below:
-            sand[0] -= 1; sand[1] += 1
+            grain[0] -= 1; grain[1] += 1
         elif right and not (below and left):
-            sand[0] += 1; sand[1] += 1
+            grain[0] += 1; grain[1] += 1
         else:
-            cave.add(tuple(sand))
-            allsand.add(tuple(sand))
+            rock.add(tuple(grain))
+            sand.add(tuple(grain))
             break
 
-        if floor > 0 and sand[1]+1 == floor:
-            cave.add(tuple(sand))
-            allsand.add(tuple(sand))
+        if floor > 0 and grain[1]+1 == floor:
+            rock.add(tuple(grain))
+            sand.add(tuple(grain))
             break
 
-    return full, allsand
+    return full, sand
 
-def fillcave(rock, abyss = True):
+def fillcave(cave, abyss = True):
 
-    allsand = set()
-    cave, depth = makecave(rock)
-    full = False
+    sand = set(); full = False
+    rock, depth = findrock(cave)
 
     if abyss: floor = 0
-    else: floor = depth+2
+    else: floor = depth + 2
 
     while not full:
-        full, allsand = sandfall(cave, depth, allsand, floor)
+        full, sand = sandfall(rock, sand, depth, floor)
 
-    return len(allsand)
+    return len(sand)
 
-rock = [[tuple(map(int, re.split(',', coor))) for coor in list(re.split('->', path))] for path in getinput('14')]
+cave = [[tuple(map(int, re.split(',', coor))) 
+                for coor in list(re.split('->', path))] 
+                            for path in getinput('14')]
 
-print('Part 1:', fillcave(rock))
-print('Part 2:', fillcave(rock, abyss = False))
+print('Part 1:', fillcave(cave))
+print('Part 2:', fillcave(cave, abyss = False))
