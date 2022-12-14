@@ -3,8 +3,10 @@
 from _getinput import *
 import re
 
-def makecave(rock, cave = set(), depth = 0):
+def makecave(rock, depth = 0):
 
+    cave = set()
+    
     for path in rock:
 
         for i, coor in enumerate(path):
@@ -35,47 +37,57 @@ def makecave(rock, cave = set(), depth = 0):
 
     return cave, depth
 
-def sandfall(cave, depth):
+def sandfall(cave, depth, allsand, floor = 0):
 
     full = False
     sand = [500,0]
 
     while True:
 
+        if floor > 0 and (500,1) in cave and (501,1) in cave and (499,1) in cave:
+            cave.add((500,0))
+            allsand.add((500,0))
+            full = True; break
+        elif floor == 0 and sand[1] > depth:
+            full = True; break
+
         below = (sand[0],sand[1]+1) not in cave
         left = (sand[0]-1,sand[1]+1) not in cave
         right = (sand[0]+1,sand[1]+1) not in cave
 
-        if below: # I can go down!
+        if below: 
             sand[1] += 1
-
-        elif not below and left: # I can go left:
+        elif left and not below:
             sand[0] -= 1; sand[1] += 1
-
-        elif not below and not left and right: # I can go right:
+        elif right and not (below and left):
             sand[0] += 1; sand[1] += 1
-
-        else: # Can't go anywhere
-            print('end',sand)
+        else:
             cave.add(tuple(sand))
             allsand.add(tuple(sand))
             break
 
-        if sand[1] > depth: 
-            full = True
+        if floor > 0 and sand[1]+1 == floor:
+            cave.add(tuple(sand))
+            allsand.add(tuple(sand))
             break
 
-    return full
+    return full, allsand
 
-rock = getinput('14')
-rock = [[tuple(map(int, re.split(',', coor))) for coor in list(re.split('->', path))] for path in rock]
-cave, depth = makecave(rock)
+def fillcave(rock, abyss = True):
 
-sand = [500,0]
-allsand = set()
-full = False
+    allsand = set()
+    cave, depth = makecave(rock)
+    full = False
 
-while not full:
-    full = sandfall(cave, depth)
+    if abyss: floor = 0
+    else: floor = depth+2
 
-print(len(allsand))
+    while not full:
+        full, allsand = sandfall(cave, depth, allsand, floor)
+
+    return len(allsand)
+
+rock = [[tuple(map(int, re.split(',', coor))) for coor in list(re.split('->', path))] for path in getinput('14')]
+
+print('Part 1:', fillcave(rock))
+print('Part 2:', fillcave(rock, abyss = False))
