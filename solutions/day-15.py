@@ -3,57 +3,68 @@
 from _getinput import *
 import re, itertools
 
-def manhattan(sens,beac):
-    return sum([abs(sens[i]-beac[i]) for i in range(2)])
+def manhattan(input, signal = []):
 
-def elfdistress(signal, distances, part):
+    for sig in input:
+        sig = list(map(int,re.findall(r'-?\d+', sig)))
+        sens, beac = sig[:2], sig[2:]
+        dist = sum([abs(sens[i]-beac[i]) for i in range(2)])
+        signal.append([sens,beac,dist])
 
-    if part == 1:
-        targets = [2000000]
-        tbeac = set()
-    elif part == 2:
-        targets = list(range(4000000+1))
+    return signal
+
+def findempty(signal, target, empty = []):
+
+    for sig in signal:
+        sx,sy = sig[0]; dist = sig[2]
+
+        if sy-dist <= target <= sy+dist:
+            xran = dist - abs(sy-target)
+            empty.append([sx - xran, sx + xran])
+
+    return empty        
+
+def nobeacon(empty, target, tbeac = set()):
+    empty = list(itertools.chain(*empty))
+    nobeac = len(list(range(min(empty),max(empty)+1)))
+    
+    for sig in signal:
+        beac = sig[1]
+        if beac[1] == target and min(empty) <= beac[0] <= max(empty):
+            tbeac.add(tuple(beac))
+
+    return nobeac - len(tbeac)
+
+def checkrange(empty, x, y):
+    y+=1; empty.sort(); xrange = empty.pop(0)
+
+    while empty:
+        new = empty.pop(0)
+
+        if new[0] > xrange[1]+1:
+            x = xrange[1] + 1; break
+        if new[1] > xrange[1]:
+            xrange[1] = new[1]
+
+    return x, y
+
+def elfdistress(signal, target):
+
+    if type(target) is int:
+        empty = findempty(signal, target)
+        nobeac = nobeacon(empty, target)
+        return nobeac
+
+    elif type(target) is list:
         y = -1; x = -1
 
-    for target in targets:
-        empty = []
+        for t in target:
+            empty = findempty(signal, t)
+            x, y = checkrange(empty, x, y)
+            if x > -1: 
+                return x*4000000+y; break
 
-        for i, sig in enumerate(signal):
-            sens = sig[:2]; dist = distances[i]
+signal = manhattan(getinput('15'))
 
-            if sens[1]-dist <= target <= sens[1]+dist:
-                xran = dist - abs(sens[1]-target)
-                empty.append([sens[0] - xran, sens[0] + xran])
-
-        if part == 1:  
-            empty = list(itertools.chain(*empty))
-            nobeac = len(list(range(min(empty),max(empty)+1)))
-            
-            for sig in signal:
-                if sig[-1] == target and min(empty) <= sig[-2] <= max(empty):
-                    tbeac.add((sig[-1],sig[-2]))
-
-        elif part == 2:
-            y+=1
-            empty.sort()
-            xrange = empty.pop(0)
-
-            while empty:
-                new = empty.pop(0)
-
-                if new[0] > xrange[1]+1:
-                    x = xrange[1] + 1; break
-                if new[1] > xrange[1]:
-                    xrange[1] = new[1]
-
-            if x > -1: break
-
-    if part == 1: return nobeac
-    if part == 2: return x*4000000+y
-
-signal = getinput('15')
-signal = [list(map(int,re.findall(r'-?\d+', sig))) for sig in signal]
-distances = [manhattan(sig[:2],sig[2:]) for sig in signal]
-
-print('Part 1:', elfdistress(signal, distances, 1))
-print('Part 2:', elfdistress(signal, distances, 2))
+print('Part 1:', elfdistress(signal, 2000000))
+print('Part 2:', elfdistress(signal, list(range(4000000+1))))
