@@ -55,7 +55,6 @@ def tetris(shape, moves, rockpos, height):
 
     return rockpos, height, moves, imove, shape
 
-
 moves = list(map(str,getinput('17')))
 
 shapes = {'-': [(2,0), (3,0), (4,0), (5,0)], 
@@ -72,39 +71,44 @@ imoves = list(range(len(moves)))
 height = 0 # How high is the tower
 rockpos = set() # Keep track of all the rocks in tower
 
-states = {}; keys = []
-
+keys = []; states = []
 
 for i in range(int(1e12)):
 
-    state = (ishapes[0], imoves[0])
+    if i == 2022:
+        print(height)
 
-    if state in states:
-        print("Cycle!")
-        ibeg, hbeg = states[state]
-        icycle, hcycle = i-ibeg, height-hbeg
+    key = (ishapes[0], imoves[0])
+    state = (i, height)
 
-        div, mod = divmod(1e12-ibeg, icycle)
-        div, mod = int(div), int(mod)
-        print(icycle, hcycle, ibeg, hbeg)
+    threeocc = keys.count(key) == 3
+    
+    if threeocc:
+        cycles = [i for i, k in enumerate(keys) if k == key]
+        evenlyspaced = cycles[1]-cycles[0] == cycles[2] - cycles[1]
 
-        if mod > 0:
-            print("Rest cycle")
-            imod = ibeg + mod-1
-            key = keys[imod]
-            irest, hrest = states[key]
-            total = hcycle*div + hrest
+        if evenlyspaced:
+            ibeg, hbeg = states[cycles[0]]
+            icycle, hcycle = states[cycles[1]]
+
+            icycle, hcycle = icycle-ibeg, hcycle-hbeg
+
+            div, mod = divmod(1e12-ibeg, icycle)
+            div, mod = int(div), int(mod)
+
+            if mod > 0:
+                imod = ibeg + mod
+                irest, hrest = states[imod]
+                total = hcycle*div + hrest
+            else: 
+                total = hcycle*div + hbeg
+
             print(total)
-        else: 
-            print("No rest cycle")
-            total = hcycle*div + hbeg
-            print(total)
+            break
 
-        break
-
-    else: 
-        states[state] = i, height
-        keys.append(state)
+    else:
+        states.append(state)
+        keys.append(key)
 
     ishape = ishapes.pop(0); ishapes.append(ishape)
     shape = order[ishape]
