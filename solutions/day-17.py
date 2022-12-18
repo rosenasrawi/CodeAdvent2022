@@ -2,6 +2,22 @@
 
 from _getinput import *
 
+def tetrisdata(input):
+
+    shapes = {'-': [(2,0), (3,0), (4,0), (5,0)], 
+              '+': [(2,1), (3,0), (3,1), (3,2), (4,1)], 
+              'L': [(2,0), (3,0), (4,0), (4,1), (4,2)], 
+              '|': [(2,0), (2,1), (2,2), (2,3)],
+              'o': [(2,0), (3,0), (2,1), (3,1)]}
+
+    order = ['-','+','L','|','o']
+    ishapes = list(range(len(order)))
+
+    moves = list(map(str,input))
+    imoves = list(range(len(moves)))
+
+    return shapes, order, ishapes, moves, imoves
+
 def tetris(shape, moves, rockpos, height):
     
     rest = False
@@ -10,9 +26,6 @@ def tetris(shape, moves, rockpos, height):
 
         imove = imoves.pop(0); imoves.append(imove)
         move = moves[imove]
-
-        # Move left/right
-
         moved = [c.copy() for c in shape]
 
         if move == '>':
@@ -35,85 +48,72 @@ def tetris(shape, moves, rockpos, height):
             if not isrock and not iswall:
                 for c in shape: c[0] -= 1
 
-        # Drop one down
         dropped = [c.copy() for c in shape]
         for c in dropped: c[1] -= 1
         dropped = [tuple(c) for c in dropped]
 
-        # Check if this dropped shape possible
         isrock = any([c in rockpos for c in dropped])
         isfloor = any([c[1] < 0 for c in dropped])
 
-        if isrock or isfloor: # cannot drop
+        if isrock or isfloor:
             for c in shape:
-                rockpos.add(tuple(c)) # comes to rest
-                if c[1]+1 > height: height = c[1]+1 # update height
+                rockpos.add(tuple(c))
+                if c[1]+1 > height: height = c[1]+1
             rest = True
             
-        else: # can drop
-            for c in shape: c[1] -= 1 # shape drops one down
+        else:
+            for c in shape: c[1] -= 1
 
-    return rockpos, height, moves, imove, shape
+    return rockpos, height, moves
 
-moves = list(map(str,getinput('17')))
+def buildtower(shapes, order, ishapes, moves, imoves):
 
-shapes = {'-': [(2,0), (3,0), (4,0), (5,0)], 
-          '+': [(2,1), (3,0), (3,1), (3,2), (4,1)], 
-          'L': [(2,0), (3,0), (4,0), (4,1), (4,2)], 
-          '|': [(2,0), (2,1), (2,2), (2,3)],
-          'o': [(2,0), (3,0), (2,1), (3,1)]}
+    height = 0; rockpos = set()
+    keys = []; states = []
 
-order = ['-','+','L','|','o']
+    for i in range(int(1e12)):
 
-ishapes = list(range(len(order)))
-imoves = list(range(len(moves)))
+        if i == 2022:
+            print("Part 1:", height)
 
-height = 0 # How high is the tower
-rockpos = set() # Keep track of all the rocks in tower
+        key = (ishapes[0], imoves[0])
+        state = (i, height)
 
-keys = []; states = []
+        threeocc = keys.count(key) == 3
+        
+        if threeocc:
+            cycles = [i for i, k in enumerate(keys) if k == key]
+            evenlyspaced = cycles[1]-cycles[0] == cycles[2] - cycles[1]
 
-for i in range(int(1e12)):
+            if evenlyspaced:
+                ibeg, hbeg = states[cycles[1]]
+                icycle, hcycle = states[cycles[2]]
 
-    if i == 2022:
-        print(height)
+                icycle, hcycle = icycle-ibeg, hcycle-hbeg
 
-    key = (ishapes[0], imoves[0])
-    state = (i, height)
+                div, mod = divmod(1e12-ibeg, icycle)
+                div, mod = int(div), int(mod)
 
-    threeocc = keys.count(key) == 3
-    
-    if threeocc:
-        cycles = [i for i, k in enumerate(keys) if k == key]
-        evenlyspaced = cycles[1]-cycles[0] == cycles[2] - cycles[1]
+                if mod > 0:
+                    imod = ibeg + mod
+                    irest, hrest = states[imod]
+                    total = hcycle*div + hrest
+                else: 
+                    total = hcycle*div + hbeg
+                print("Part 2:", total)
+                break
 
-        if evenlyspaced:
-            ibeg, hbeg = states[cycles[0]]
-            icycle, hcycle = states[cycles[1]]
+        else:
+            states.append(state)
+            keys.append(key)
 
-            icycle, hcycle = icycle-ibeg, hcycle-hbeg
+        ishape = ishapes.pop(0); ishapes.append(ishape)
+        shape = order[ishape]
+        shape = [list(c) for c in shapes[shape]]
 
-            div, mod = divmod(1e12-ibeg, icycle)
-            div, mod = int(div), int(mod)
+        for c in shape: c[1] += height + 3
 
-            if mod > 0:
-                imod = ibeg + mod
-                irest, hrest = states[imod]
-                total = hcycle*div + hrest
-            else: 
-                total = hcycle*div + hbeg
+        rockpos, height, moves = tetris(shape, moves, rockpos, height)
 
-            print(total)
-            break
-
-    else:
-        states.append(state)
-        keys.append(key)
-
-    ishape = ishapes.pop(0); ishapes.append(ishape)
-    shape = order[ishape]
-    shape = [list(c) for c in shapes[shape]]
-
-    for c in shape: c[1] += height + 3
-
-    rockpos, height, moves, imove, shape = tetris(shape, moves, rockpos, height)
+shapes, order, ishapes, moves, imoves = tetrisdata(getinput('17'))
+buildtower(shapes, order, ishapes, moves, imoves)
