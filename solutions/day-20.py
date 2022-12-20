@@ -83,17 +83,8 @@ def position_rotate(numbers, nmix = 1, decrypt = False, key = 811589153):
 
 numbers = list(map(int, getinput('20')))
 
-import time
-
-t1=time.time()
 print('Part 1:', position(numbers))
 print('Part 2:', position(numbers, nmix = 10, decrypt = True))
-t2=time.time()
-print('mod', t2-t1)
 
-t1=time.time()
 print('Part 1:', position_rotate(numbers))
 print('Part 2:', position_rotate(numbers, nmix = 10, decrypt = True))
-t2=time.time()
-print('rot', t2-t1)
-
