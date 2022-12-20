@@ -1,6 +1,7 @@
 # Day 20: Grove Positioning System 
 
 from _getinput import *
+from collections import deque
 
 def mixing(mixed, index, imax, imin):
 
@@ -24,18 +25,35 @@ def mixing(mixed, index, imax, imin):
             mixed.insert(inext, n)
             index.insert(inext, id)
 
-    return mixed, index, imax
+    return mixed, index
 
-def getgrove(mixed, imax):
+def mixing_rotate(mixed, index):
+
+    for i in range(len(numbers)):
+        imove = index.index(i)
+        move = mixed[imove]
+
+        del mixed[imove]
+        del index[imove]
+
+        mixed.rotate(-move)
+        index.rotate(-move)
+
+        mixed.insert(imove, move)
+        index.insert(imove, i)
+
+    return mixed, index
+
+def getgrove(mixed):
 
     i0 = mixed.index(0)
-    coor = [(i0 + n) % (imax + 1) for n in [1000,2000,3000]]
+    coor = [(i0 + n) % len(mixed) for n in [1000,2000,3000]]
 
     grove = sum(mixed[c] for c in coor)
 
     return grove
 
-def positioning(numbers, nmix = 1, decrypt = False, key = 811589153):
+def position(numbers, nmix = 1, decrypt = False, key = 811589153):
 
     mixed = numbers.copy()
     index = list(range(len(mixed)))
@@ -45,11 +63,37 @@ def positioning(numbers, nmix = 1, decrypt = False, key = 811589153):
         mixed = [num * key for num in mixed]
 
     for i in range(nmix):
-        mixed, index, imax = mixing(mixed, index, imax, imin)
+        mixed, index = mixing(mixed, index, imax, imin)
 
-    return getgrove(mixed, imax)
+    return getgrove(mixed)
+
+def position_rotate(numbers, nmix = 1, decrypt = False, key = 811589153):
+
+    mixed = deque([num for num in numbers])
+    index = deque(list(range(len(numbers))))
+
+    if decrypt:
+        mixed = [num * key for num in mixed]
+        mixed = deque([num for num in mixed])
+
+    for i in range(nmix):
+        mixed, index = mixing_rotate(mixed, index)
+
+    return getgrove(mixed)
 
 numbers = list(map(int, getinput('20')))
 
-print('Part 1:', positioning(numbers))
-print('Part 2:', positioning(numbers, nmix = 10, decrypt = True))
+import time
+
+t1=time.time()
+print('Part 1:', position(numbers))
+print('Part 2:', position(numbers, nmix = 10, decrypt = True))
+t2=time.time()
+print('mod', t2-t1)
+
+t1=time.time()
+print('Part 1:', position_rotate(numbers))
+print('Part 2:', position_rotate(numbers, nmix = 10, decrypt = True))
+t2=time.time()
+print('rot', t2-t1)
+
