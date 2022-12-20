@@ -9,8 +9,9 @@ def neighbours(a, b):
 
     return adj
 
-def getsurface(points):
-    drops = [points.pop(0)]; sides = 6
+def getsurface(points, sides = 6):
+
+    drops = [points.pop(0)]
 
     while points:
 
@@ -26,7 +27,7 @@ def getsurface(points):
 
     return sides, drops
 
-def findair(lava):
+def findair(lava, air = {}):
     
     x = [a[0] for a in lava]
     y = [a[1] for a in lava]
@@ -36,11 +37,10 @@ def findair(lava):
     miny, maxy = min(y), max(y)
     minz, maxz = min(z), max(z)
 
-    air = {}
+    for x in range(minx-1, maxx+1):
+        for y in range(miny-1, maxy+1):
+            for z in range(minz-1, maxz+1):
 
-    for x in range(minx-1,maxx+1):
-        for y in range(miny-1,maxy+1):
-            for z in range(minz-1,maxz+1):
                 if [x,y,z] not in lava:
                     air[(x,y,z)] = False
 
@@ -67,15 +67,23 @@ def findtrapped(air, start, queue = []):
 
     return trapped
 
+def lavasurface(drops, exterior = False):
+    
+    drops = [list(map(int, re.findall(r'\d+', drop))) for drop in drops]
+
+    surfacelava, lava = getsurface(drops)
+
+    if exterior:
+
+        air, start = findair(lava)
+        trapped = findtrapped(air,start)
+
+        surfacetrapped, _ = getsurface(trapped)
+        surfacelava -= surfacetrapped
+
+    return surfacelava
+
 drops = getinput('18')
-drops = [list(map(int, re.findall(r'\d+', drop))) for drop in drops]
 
-surfacelava, lava = getsurface(drops)
-
-air, start = findair(lava)
-trapped = findtrapped(air,start)
-
-surfacetrapped, _ = getsurface(trapped)
-
-print('Part 1:', surfacelava)
-print('Part 2:', surfacelava - surfacetrapped)
+print('Part 1:', lavasurface(drops))
+print('Part 2:', lavasurface(drops, exterior=True))
