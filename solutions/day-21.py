@@ -3,12 +3,10 @@
 from _getinput import *
 import re
 
-def getmonkeys(input):
+def getmonkeys(input, monkeys = {}):
 
-    monkeys = {}
-
-    for m in input:
-        m, oper = re.split(': ', m)
+    for line in input:
+        m, oper = re.split(': ', line)
         if oper.isnumeric():
             monkeys[m] = int(oper)
         else: monkeys[m] = oper
@@ -48,18 +46,15 @@ def checksign(monkeys, rootl, rootr):
     left = newmonkeys[rootl]
     right = newmonkeys[rootr]
 
-    if left-right > 0:
+    if left-right > 0: 
         return [0,1]
-    else: return [1,0]
+    elif left-right < 0:
+        return [1,0]
 
-def findhumn(monkeys):
+def findhumn(monkeys, settled = False, hbounds = [0,int(5e14)]):
 
     root = monkeys['root']
-    rootl, op, rootr = re.split(' ', root)
-
-    settled = False
-    hbounds = [0, int(5e14)]
-
+    rootl, _, rootr = re.split(' ', root)
     s = checksign(monkeys, rootl, rootr)
 
     while not settled:
@@ -73,22 +68,16 @@ def findhumn(monkeys):
         left = newmonkeys[rootl]
         right = newmonkeys[rootr]
 
-        if left == right: settled = True
-
-        diff = left - right
-
-        if diff > 0: 
+        if left == right: 
+            settled = True
+        if left - right > 0: 
             hbounds[s[0]] = humn
-        if diff < 0:
+        if left - right < 0:
             hbounds[s[1]] = humn
 
     return humn
 
 monkeys = getmonkeys(getinput('21'))
 
-newmonkeys = monkeymath(monkeys.copy())
-root = int(newmonkeys['root'])
-print('Part 1:', root)
-
-humn = findhumn(monkeys.copy())
-print('Part 2:', humn)
+print('Part 1:', int(monkeymath(monkeys.copy())['root']))
+print('Part 2:', findhumn(monkeys.copy()))
