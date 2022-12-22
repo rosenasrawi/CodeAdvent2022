@@ -76,6 +76,38 @@ def navigate(input, dx = 1, dy = 0):
     print(row, col, face)
     return answer
 
-input = getinput('jet')
+input = getinput('22')
+print('Part 1:', navigate(input))
 
-print(navigate(input))
+# Start part 2
+
+def transition(x,y,dir):
+
+    # 4 > 6 (A)
+    if  99 < x < 200 and y == 300 and dir == (0,1): 
+        nx = 99 
+        ny = 300 + (x-100)
+        dir = (-1,0)
+    
+    # 6 > 4 (A)
+    if x == 100 and 299 < y < 400 and dir == (1,0):
+        nx = 100 + (y-300)
+        ny = 299
+        dir = (0,-1)
+
+    # 3 > 2 (D)
+    if x == 200 and 99 < y < 200 and dir == (1,0):
+        nx = 100 + y
+        ny = 99
+        dir = (0,-1)
+    
+    # 2 > 3 (D)
+    if 199 < x < 300 and y == 100 and dir == (0,1):
+        nx = 199
+        ny = x - 100
+        dir = (-1,0)
+
+    return nx,ny,dir
+
+print(transition(100,300,(0,1))) # test 4 > 6
+print(transition(100,300,(1,0))) # test 6 > 4
