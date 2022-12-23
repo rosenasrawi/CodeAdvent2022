@@ -1,6 +1,7 @@
 # Day 23: Unstable Diffusion
 
 from _getinput import *
+from collections import Counter
 
 def findelves(input, elves = []):
 
@@ -11,6 +12,10 @@ def findelves(input, elves = []):
                 elves.append(elf)
 
     return elves
+
+def getorder():
+    
+    return [('N','NE','NW'), ('S','SE','SW'), ('W','NW','SW'), ('E','NE','SE')]
 
 def adjacent(x,y):
 
@@ -26,12 +31,14 @@ def elfupdate(elves, order):
     moves = []
     newelves = []
 
+    elfset = set(elves)
+
     for elf in elves:
         x,y = elf
         adj = adjacent(x,y)
         dirs = adj.values()
-        free = [d not in elves for d in dirs]
-
+        free = [d not in elfset for d in dirs]
+        # free = [4,4]
         if sum(free) == 8:
             moves.append(elf)
 
@@ -41,7 +48,7 @@ def elfupdate(elves, order):
             for dir in order:
 
                 pos = [adj[d] for d in dir]
-                free = [p not in elves for p in pos]
+                free = [p not in elfset for p in pos]
 
                 if sum(free) == 3:
                     movetry = pos[0]
@@ -50,12 +57,14 @@ def elfupdate(elves, order):
             if movetry == None:
                 moves.append(elf)
             else: moves.append(movetry)
-    
+
+    movecounts = Counter(moves)
+
     for i in range(len(moves)):
 
         move = moves[i]; elf = elves[i]
 
-        if moves.count(move) == 1:
+        if movecounts[move] == 1:
             newelves.append(move)
         else: newelves.append(elf)
 
@@ -64,8 +73,9 @@ def elfupdate(elves, order):
 
     return elves, order
 
-def elfspread(elves, order, empty = 0):
+def ontrack(elves, empty = 0):
 
+    order = getorder()
     for i in range(10):
         elves, order = elfupdate(elves,order)
 
@@ -81,18 +91,22 @@ def elfspread(elves, order, empty = 0):
 
     return empty
 
-import time
+def elfspread(elves):
 
-t1 = time.time()
+    order = getorder()
+    round = 0; spread = False
+    
+    while not spread:
+        oldelves = elves.copy()
+        elves, order = elfupdate(elves,order)
+        round += 1
 
-input = getinput('23')
+        if elves == oldelves:
+            spread = True
+    
+    return round
 
-elves = findelves(input)
-order = [('N','NE','NW'), ('S','SE','SW'), ('W','NW','SW'), ('E','NE','SE')]
+elves = findelves(getinput('23'))
 
-empty = elfspread(elves,order)
-
-print(empty)
-
-t2 = time.time()
-print(t2-t1)
+print('Part 1:', ontrack(elves))
+print('Part 2:', elfspread(elves))
