@@ -1,4 +1,4 @@
-# Day 22: Monkeymap
+# Day 22: Monkey Map
 
 from _getinput import *
 import re
