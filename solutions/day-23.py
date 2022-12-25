@@ -11,11 +11,9 @@ def findelves(input, elves = []):
                 elf = (x,y)
                 elves.append(elf)
 
-    return elves
+    order = [('N','NE','NW'), ('S','SE','SW'), ('W','NW','SW'), ('E','NE','SE')]
 
-def getorder():
-    
-    return [('N','NE','NW'), ('S','SE','SW'), ('W','NW','SW'), ('E','NE','SE')]
+    return elves, order
 
 def adjacent(x,y):
 
@@ -28,25 +26,18 @@ def adjacent(x,y):
 
 def elfupdate(elves, order):
 
-    moves = []
-    newelves = []
-
+    moves = elves.copy()
     elfset = set(elves)
 
-    for elf in elves:
+    for i, elf in enumerate(elves):
         x,y = elf
-        adj = adjacent(x,y)
-        dirs = adj.values()
+        adj = adjacent(x,y); dirs = adj.values()
         free = [d not in elfset for d in dirs]
-        # free = [4,4]
-        if sum(free) == 8:
-            moves.append(elf)
 
-        else:
+        if sum(free) < 8:
             movetry = None
 
             for dir in order:
-
                 pos = [adj[d] for d in dir]
                 free = [p not in elfset for p in pos]
 
@@ -54,59 +45,47 @@ def elfupdate(elves, order):
                     movetry = pos[0]
                     break
     
-            if movetry == None:
-                moves.append(elf)
-            else: moves.append(movetry)
+            if movetry != None:
+                moves[i] = movetry
 
     movecounts = Counter(moves)
 
-    for i in range(len(moves)):
-
-        move = moves[i]; elf = elves[i]
+    for i, move in enumerate(moves):
 
         if movecounts[move] == 1:
-            newelves.append(move)
-        else: newelves.append(elf)
+            elves[i] = move
 
-    elves = newelves
     order.append(order.pop(0))
 
     return elves, order
 
-def ontrack(elves, empty = 0):
+def elfspread(elves, order):
 
-    order = getorder()
-    for i in range(10):
-        elves, order = elfupdate(elves,order)
-
-    x = [elf[0] for elf in elves]
-    y = [elf[1] for elf in elves]
-
-    minx = min(x); maxx = max(x)
-    miny = min(y); maxy = max(y)
-
-    for x in range(minx,maxx+1):
-        for y in range(miny,maxy+1):
-            if (x,y) not in elves: empty += 1
-
-    return empty
-
-def elfspread(elves):
-
-    order = getorder()
-    round = 0; spread = False
+    empty = 0; round = 0; spread = False
     
     while not spread:
         oldelves = elves.copy()
         elves, order = elfupdate(elves,order)
         round += 1
 
+        if round == 10:
+            x = [elf[0] for elf in elves]
+            y = [elf[1] for elf in elves]
+
+            minx = min(x); maxx = max(x)
+            miny = min(y); maxy = max(y)
+
+            for x in range(minx,maxx+1):
+                for y in range(miny,maxy+1):
+                    if (x,y) not in elves: empty += 1
+                    
         if elves == oldelves:
             spread = True
-    
-    return round
 
-elves = findelves(getinput('23'))
+    return empty, round
 
-print('Part 1:', ontrack(elves))
-print('Part 2:', elfspread(elves))
+elves, order = findelves(getinput('23'))
+empty, round = elfspread(elves, order)
+
+print('Part 1:', empty)
+print('Part 2:', round)
